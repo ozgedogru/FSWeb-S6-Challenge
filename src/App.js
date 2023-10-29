@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CharacterList from "./components/Karakter";
+import Search from "./components/Search";
 
 const App = () => {
   // Try to think through what state you'll need for this app before starting. Then build out
@@ -11,6 +12,19 @@ const App = () => {
   // sync up with, if any.
 
   const [characters, setCharacters] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filteredCharacters, setFilteredCharacters] = useState(characters);
+
+  function handleChange(e) {
+    setSearch(e.target.value);
+  }
+
+  useEffect(() => {
+    const searchResults = characters.filter((character) =>
+      character.name.includes(search)
+    );
+    setFilteredCharacters(searchResults);
+  }, [search, characters]);
 
   useEffect(() => {
     axios
@@ -26,7 +40,8 @@ const App = () => {
 
   return (
     <div className="App">
-      <CharacterList characters={characters}></CharacterList>
+      <Search search={search} handleChange={handleChange}></Search>
+      <CharacterList characters={filteredCharacters}></CharacterList>
     </div>
   );
 };
